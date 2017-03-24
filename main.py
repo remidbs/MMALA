@@ -26,7 +26,7 @@ from MALAGaussian import MALAGaussian
 
 mu = 0
 sigma = 10
-N = 30
+N = 40
 eps = 0.75
 nb_iter = 200
 
@@ -40,6 +40,8 @@ plt.title("Subsequent iteration of MMALA algorithm for parameter esimation")
 
 plt.figure(2)
 plt.plot(alpha_over_time.cumsum() / np.cumsum(np.ones(nb_iter + 1)))
+plt.title("Acceptance rate over time (MMALAG)")
+plt.ylim(0,1)
 plt.show()
 
 malag = MALAGaussian(mu,sigma,N,eps,1,11)
@@ -52,4 +54,6 @@ plt.title("Subsequent iteration of MALA algorithm for parameter esimation")
 
 plt.figure(2)
 plt.plot(alpha_over_time.cumsum() / np.cumsum(np.ones(nb_iter + 1)))
+plt.title("Acceptance rate over time (MMALAG)")
+plt.ylim(0,1)
 plt.show()
