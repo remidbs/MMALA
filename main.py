@@ -5,7 +5,6 @@ from MMALAGaussian import MMALAGaussian
 from MALAGaussian import MALAGaussian
 
 import pandas as pd
-from pandas.tools.plotting import autocorrelation_plot
 
 '''
 	Projet MMALA Simulation on Gaussian 1D framework
@@ -82,7 +81,7 @@ def big_plot(mu, sigma,N,nb_iter):
         plt.title("Autocorrel sigma")
         plt.plot([np.abs(pd.Series(theta_over_time[:,1]).autocorr(i)) for i in range(1,100)])
 
-    plt.legend([0.1,0.75,1.5],loc="top right",bbox_to_anchor=(1.5, 1))
+    plt.legend([0.1,0.75,1.5],loc="upper right",bbox_to_anchor=(1.5, 1))
 
 
 big_plot(mu,sigma,N,nb_iter)
