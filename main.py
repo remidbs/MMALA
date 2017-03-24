@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import seaborn
 from MMALAGaussian import MMALAGaussian
 from MALAGaussian import MALAGaussian
+from MALAGaussianOtherParametrization import MALAGaussianOtherParametrization
 
 import pandas as pd
 
