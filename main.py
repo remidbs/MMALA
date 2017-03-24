@@ -4,6 +4,9 @@ import seaborn
 from MMALAGaussian import MMALAGaussian
 from MALAGaussian import MALAGaussian
 
+import pandas as pd
+from pandas.tools.plotting import autocorrelation_plot
+
 '''
 	Projet MMALA Simulation on Gaussian 1D framework
 
@@ -26,34 +29,60 @@ from MALAGaussian import MALAGaussian
 
 mu = 0
 sigma = 10
-N = 40
+N = 1
 eps = 0.75
-nb_iter = 200
+nb_iter = 1000
 
-mmalag = MMALAGaussian(mu,sigma,N,eps,1,11)
-theta_over_time, alpha_over_time = mmalag.run(nb_iter, 5, 40)
+def big_plot(mu, sigma,N,nb_iter):
+    for eps in [0.1,0.75,1.5]:
+        mmalag = MMALAGaussian(mu, sigma, N, eps, mu + 1, sigma + 1)
+        theta_over_time, alpha_over_time = mmalag.run(nb_iter, 5, 40)
+        print(theta_over_time[100:, 0].mean())
+        print(theta_over_time[100:, 1].mean())
 
-plt.plot(theta_over_time[:, 0], theta_over_time[:, 1], '-o')
-plt.xlabel("mu estimation over time")
-plt.ylabel("sigma estimation over time")
-plt.title("Subsequent iteration of MMALA algorithm for parameter esimation")
+        plt.figure(1,figsize=(18,10))
+        plt.subplot(241)
+        plt.plot(theta_over_time[:, 0], theta_over_time[:, 1], '-o')
+        plt.xlabel("mu")
+        plt.ylabel("sigma")
+        plt.title("MMALA parameter estimation")
 
-plt.figure(2)
-plt.plot(alpha_over_time.cumsum() / np.cumsum(np.ones(nb_iter + 1)))
-plt.title("Acceptance rate over time (MMALAG)")
-plt.ylim(0,1)
-plt.show()
+        plt.subplot(242)
+        plt.plot(alpha_over_time.cumsum() / np.cumsum(np.ones(nb_iter + 1)))
+        plt.title("Acceptance rate")
+        plt.ylim(0, 1)
 
-malag = MALAGaussian(mu,sigma,N,eps,1,11)
-theta_over_time, alpha_over_time = malag.run(nb_iter, 5, 40)
+        plt.subplot(243)
+        plt.title("Autocorrel mu")
+        plt.plot([np.abs(pd.Series(theta_over_time[:,0]).autocorr(i)) for i in range(1,100)])
 
-plt.plot(theta_over_time[:, 0], theta_over_time[:, 1], '-o')
-plt.xlabel("mu estimation over time")
-plt.ylabel("sigma estimation over time")
-plt.title("Subsequent iteration of MALA algorithm for parameter esimation")
+        plt.subplot(244)
+        plt.title("Autocorrel sigma")
+        plt.plot([np.abs(pd.Series(theta_over_time[:,1]).autocorr(i)) for i in range(1,100)])
 
-plt.figure(2)
-plt.plot(alpha_over_time.cumsum() / np.cumsum(np.ones(nb_iter + 1)))
-plt.title("Acceptance rate over time (MMALAG)")
-plt.ylim(0,1)
-plt.show()
+        malag = MALAGaussian(mu, sigma, N, eps, mu + 1, sigma + 1)
+        theta_over_time, alpha_over_time = malag.run(nb_iter, 5, 40)
+
+        plt.subplot(245)
+        plt.plot(theta_over_time[:, 0], theta_over_time[:, 1], '-o')
+        plt.xlabel("mu")
+        plt.ylabel("sigma")
+        plt.title("MALA parameter estimation")
+
+        plt.subplot(246)
+        plt.plot(alpha_over_time.cumsum() / np.cumsum(np.ones(nb_iter + 1)))
+        plt.title("Acceptance rate")
+        plt.ylim(0, 1)
+
+        plt.subplot(247)
+        plt.title("Autocorrel mu")
+        plt.plot([np.abs(pd.Series(theta_over_time[:,0]).autocorr(i)) for i in range(1,100)])
+
+        plt.subplot(248)
+        plt.title("Autocorrel sigma")
+        plt.plot([np.abs(pd.Series(theta_over_time[:,1]).autocorr(i)) for i in range(1,100)])
+
+    plt.legend([0.1,0.75,1.5],loc="top right",bbox_to_anchor=(1.5, 1))
+
+
+big_plot(mu,sigma,N,nb_iter)

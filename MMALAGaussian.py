@@ -23,12 +23,12 @@ class MMALAGaussian:
 
         mu = np.array(
             [mu2 + eps ** 2 * m_1 * 0.5 / N,
-             sigma2 + eps ** 2 * 0.25 * m_2 / N / sigma2 - 0.25 * eps ** 2 * sigma2])
+             sigma2 + 0.25 * eps ** 2 * m_2 / N / sigma2 - 0.25 * eps ** 2 * sigma2 / np.sqrt(2 * N)])
         return -0.5 / eps ** 2 * (theta - mu).T.dot(G).dot(theta - mu)
 
     def acceptation_rate(self, mu, sigma, new_mu, new_sigma):
-        prior_ratio = np.exp(-0.5 * ((new_mu - self.prior_mu) ** 2 - (mu - self.prior_mu) ** 2 +
-                                     (new_sigma - self.prior_sigma) ** 2 - (sigma - self.prior_sigma) ** 2))
+        prior_ratio = np.exp(-0.5 * ((new_mu - self.prior_mu) ** 2 - (mu - self.prior_mu) ** 2) +
+                             -0.5 * ((new_sigma - self.prior_sigma) ** 2 - (sigma - self.prior_sigma) ** 2))
         return min(1, prior_ratio * np.exp(
             self.log_q(mu, sigma, new_mu, new_sigma) - self.log_q(new_mu, new_sigma, mu, sigma)))
 
