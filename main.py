@@ -84,5 +84,5 @@ def big_plot(mu, sigma,N,nb_iter):
 
     plt.legend([0.1,0.75,1.5],loc="upper right",bbox_to_anchor=(1.5, 1))
 
-
 big_plot(mu,sigma,N,nb_iter)
+plt.show()
