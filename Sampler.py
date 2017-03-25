@@ -28,5 +28,5 @@ class Sampler:
         samples[:, 0] = self.strategy.problem.starting_point
         acceptation_rates[0] = 1.
         for t in range(1, self.n_samples):
-            samples[:, t], acceptation_rates[t] = self.one_sample(samples[:, t - 1])
+            samples[:, t], acceptation_rates[t] = self.one_sample(samples[:, t - 1].copy())
         return samples, acceptation_rates
