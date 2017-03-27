@@ -2,8 +2,8 @@ import numpy as np
 
 
 class BananaProblem:
-    def __init__(self, a, B, starting_mu, starting_sigma):
-        self.starting_point = np.array([starting_mu, starting_sigma])
+    def __init__(self, a, B, starting_x, starting_y):
+        self.starting_point = np.array([starting_x, starting_y])
         self.d = 2
         self.a = a * 1.
         self.B = B * 1.
