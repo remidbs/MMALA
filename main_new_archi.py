@@ -67,6 +67,7 @@ def gaussian_samples(nb_iter):
         plt.plot([np.abs(pd.Series(theta_over_time[1, :]).autocorr(i)) for i in range(1, 100)])
 
     plt.legend([0.1, 0.75, 1.5], loc="upper right", bbox_to_anchor=(1.5, 1))
+    plt.suptitle("Comparison between MMALA and MALA scheme - gaussian shape")
     plt.show()
 
 
@@ -74,7 +75,7 @@ def gaussian_samples(nb_iter):
 def banana_samples(nb_iter):
     pb = BananaProblem(100,0.1,10,10)
     plt.figure(2, figsize=(18, 10))
-    epsilons = [0.5,1.0,1.5]
+    epsilons = [0.5,1.0,1.5] # [1.5, 2.1]
     for eps in epsilons:
         #MMALA
         sampler = Sampler(MmalaStrategy(pb), epsilon=eps, n_samples=nb_iter)
@@ -124,6 +125,8 @@ def banana_samples(nb_iter):
         plt.plot([np.abs(pd.Series(theta_over_time[1, :]).autocorr(i)) for i in range(1, 100)])
 
     plt.legend(epsilons, loc="upper right", bbox_to_anchor=(1.5, 1))
+    plt.suptitle("Comparison between MMALA and MALA scheme - banana shape")
     plt.show()
 
+# gaussian_samples(1000)
 banana_samples(1000)
