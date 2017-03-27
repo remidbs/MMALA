@@ -15,12 +15,14 @@ class Sampler:
         mu_x_proposed = self.strategy.mu(self.epsilon, x_proposed)
         sigma_x_proposed = self.strategy.sigma(self.epsilon, x_proposed)
         acceptation_rate = min(1, self.strategy.pi_ratio(x, x_proposed) *
-                               np.exp(-0.5 * (x - mu_x_proposed).T.dot(np.linalg.inv(sigma_x_proposed)).dot(x - mu_x_proposed) -
-                                      -0.5 * (x_proposed - mu_x).T.dot(np.linalg.inv(sigma_x)).dot(x_proposed - mu_x)))
+                               np.exp(-0.5 * (x - mu_x_proposed).T.dot(np.linalg.inv(sigma_x_proposed)).dot(
+                                   x - mu_x_proposed) -
+                                      -0.5 * (x_proposed - mu_x).T.dot(np.linalg.inv(sigma_x)).dot(x_proposed - mu_x)) *
+                               np.sqrt(np.linalg.det(sigma_x) / np.linalg.det(sigma_x_proposed)))
         if (np.random.uniform() < acceptation_rate):
-            return x_proposed, acceptation_rate
+            return x_proposed, x_proposed, acceptation_rate
         else:
-            return x, acceptation_rate
+            return x, x_proposed, acceptation_rate
 
     def sample(self):
         samples = np.zeros((self.d, self.n_samples))
@@ -28,5 +30,5 @@ class Sampler:
         samples[:, 0] = self.strategy.problem.starting_point
         acceptation_rates[0] = 1.
         for t in range(1, self.n_samples):
-            samples[:, t], acceptation_rates[t] = self.one_sample(samples[:, t - 1].copy())
+            samples[:, t], _, acceptation_rates[t] = self.one_sample(samples[:, t - 1].copy())
         return samples, acceptation_rates
