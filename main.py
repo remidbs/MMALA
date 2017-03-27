@@ -29,7 +29,7 @@ import pandas as pd
 
 mu = 0
 sigma = 10
-N = 1
+N = 100
 eps = 0.75
 nb_iter = 1000
 
@@ -86,3 +86,4 @@ def big_plot(mu, sigma,N,nb_iter):
 
 
 big_plot(mu,sigma,N,nb_iter)
+plt.show()
