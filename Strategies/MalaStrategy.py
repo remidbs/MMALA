@@ -13,7 +13,7 @@ class MalaStrategy:
         return mu
 
     def sigma(self, epsilon, x):
-        sigma = epsilon ** -2 * np.eye(self.d)
+        sigma = epsilon ** 2 * np.eye(self.d)
         return sigma
 
     def pi_ratio(self, x, x_new):

@@ -19,7 +19,8 @@ def gaussian_samples(nb_iter):
     pb = GaussianProblem(mu, sigma, mu + 1, sigma + 1, N, 10, 40)
 
     plt.figure(1, figsize=(18, 10))
-    for eps in [0.1, 0.75, 1.5]:
+    for eps in [0.01, 0.75, 10.]:
+    # for eps in [0.1, 0.75, 1.5]:
         # MMALA
         sampler = Sampler(MmalaStrategy(pb), epsilon=eps, n_samples=nb_iter)
         theta_over_time, alpha_over_time = sampler.sample()
@@ -82,7 +83,7 @@ def banana_samples(nb_iter):
 
         plt.subplot(241)
         plt.scatter(theta_over_time[0, :], theta_over_time[1, :])
-        plt.xlabel("x2")
+        plt.xlabel("x1")
         plt.ylabel("x2")
         plt.title("MMALA")
 
@@ -105,8 +106,8 @@ def banana_samples(nb_iter):
 
         plt.subplot(245)
         plt.scatter(theta_over_time[0, :], theta_over_time[1, :])
-        plt.xlabel("mu")
-        plt.ylabel("sigma")
+        plt.xlabel("x1")
+        plt.ylabel("x2")
         plt.title("MALA")
 
         plt.subplot(246)
@@ -185,11 +186,6 @@ def banana3D_samples(nb_iter):
         plt.xlabel("x1")
         plt.ylabel("x2")
         plt.title("MALA")
-        plt.subplot(2, 5, 10)
-        plt.plot(theta_over_time[0, :], theta_over_time[2, :], '-o')
-        plt.xlabel("x1")
-        plt.ylabel("x3")
-        plt.title("MALA")
 
         plt.subplot(257)
         plt.plot(alpha_over_time.cumsum() / np.cumsum(np.ones(nb_iter)))
@@ -206,11 +202,46 @@ def banana3D_samples(nb_iter):
         plt.plot([np.abs(pd.Series(theta_over_time[1, :]).autocorr(i)) for i in range(1, 100)])
         plt.ylim(0,1)
 
+        plt.subplot(2, 5, 10)
+        plt.plot(theta_over_time[0, :], theta_over_time[2, :], '-o')
+        plt.xlabel("x1")
+        plt.ylabel("x3")
+        plt.title("MALA")
     plt.legend(sigmas3, loc="upper right", bbox_to_anchor=(1.5, 1))
     plt.suptitle("Comparison between MMALA and MALA scheme - banana shape")
     plt.show()
 
 
-# gaussian_samples(1000)
-# banana_samples(10000)
-banana3D_samples(2000)
+# gaussian_samples(3000)
+# banana_samples(3000)
+banana3D_samples(3000)
+
+
+algo = "MMALA"
+from plot_ellipse import plot_ellipse
+problem = BananaProblem(100, 0.1, 10, 10)
+if algo=="MALA":
+    sp = Sampler(MalaStrategy(problem), epsilon=0.75, n_samples=1000)
+else:
+    sp = Sampler(MmalaStrategy(problem), epsilon=0.75, n_samples=1000)
+x = np.array([10.,10.])
+xs = [x]
+n_iter = 3200
+for i in range(n_iter):
+    x_new, x_proposed, _ = sp.one_sample(x.copy())
+    if i > (n_iter-200):
+        plt.figure()
+        plot_ellipse(sp.strategy.mu(0.75,x),sp.strategy.sigma(0.75,x),0.95,"black")
+        plt.plot(np.array(xs)[:,0],np.array(xs)[:,1], '-o',markersize=0.1,linewidth=0.3)
+        plt.plot([x[0],x_proposed[0]],[x[1],x_proposed[1]], '-o')
+        plt.plot([x_proposed[0]],[x_proposed[1]], '-o')
+        plt.xlim(-20,20)
+        plt.ylim(-25,15)
+        plt.title(algo)
+        if((x_proposed == x_new).all()):
+            plt.legend(["history","current point","proposal (accepted)"],loc="upper right", )
+        else:
+            plt.legend(["history","current point","proposal (rejected)"],loc="upper right", )
+        plt.waitforbuttonpress()
+    xs += [x_new]
+    x = x_new
