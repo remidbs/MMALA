@@ -128,29 +128,31 @@ def banana_samples(nb_iter):
 
 
 def banana3D_samples(nb_iter):
-    pb = Banana3DProblem(100, 0.1, 100, [10, 10, 0])
     plt.figure(2, figsize=(18, 10))
-    epsilons = [0.75]  # [1.5, 2.1]
-    for eps in epsilons:
+    eps = 0.75
+    sigmas3 = [100.,1.,0.01]
+    for sigma3 in sigmas3:
+        pb = Banana3DProblem(100, 0.1, sigma3, [10, 10, 0])
+
         # MMALA
         sampler = Sampler(MmalaStrategy(pb), epsilon=eps, n_samples=nb_iter)
         theta_over_time, alpha_over_time = sampler.sample()
 
-        fig = plt.figure(3)
-        ax = fig.add_subplot(111, projection='3d')
-        ax.scatter(theta_over_time[0, :], theta_over_time[1, :], theta_over_time[2, :])
-        plt.title("MMALA")
-        plt.figure(2)
+        # fig = plt.figure(3)
+        # ax = fig.add_subplot(111, projection='3d')
+        # ax.scatter(theta_over_time[0, :], theta_over_time[1, :], theta_over_time[2, :])
+        # plt.title("MMALA")
+        # plt.figure(2)
 
         plt.subplot(251)
-        plt.scatter(theta_over_time[0, :], theta_over_time[1, :])
-        plt.xlabel("x2")
+        plt.plot(theta_over_time[0, :], theta_over_time[1, :], '-o')
+        plt.xlabel("x1")
         plt.ylabel("x2")
         plt.title("MMALA")
         plt.subplot(255)
-        plt.scatter(theta_over_time[0, :], theta_over_time[2, :])
-        plt.xlabel("x2")
-        plt.ylabel("x2")
+        plt.plot(theta_over_time[0, :], theta_over_time[2, :], '-o')
+        plt.xlabel("x1")
+        plt.ylabel("x3")
         plt.title("MMALA")
 
         plt.subplot(252)
@@ -161,30 +163,32 @@ def banana3D_samples(nb_iter):
         plt.subplot(253)
         plt.title("Autocorrel x1")
         plt.plot([np.abs(pd.Series(theta_over_time[0, :]).autocorr(i)) for i in range(1, 100)])
+        plt.ylim(0,1)
 
         plt.subplot(254)
         plt.title("Autocorrel x2")
         plt.plot([np.abs(pd.Series(theta_over_time[1, :]).autocorr(i)) for i in range(1, 100)])
+        plt.ylim(0,1)
 
         # MALA
         sampler = Sampler(MalaStrategy(pb), epsilon=eps, n_samples=nb_iter)
         theta_over_time, alpha_over_time = sampler.sample()
 
-        fig = plt.figure(4)
-        ax = fig.add_subplot(111, projection='3d')
-        ax.scatter(theta_over_time[0, :], theta_over_time[1, :], theta_over_time[2, :])
-        plt.title("MALA")
-        plt.figure(2)
+        # fig = plt.figure(4)
+        # ax = fig.add_subplot(111, projection='3d')
+        # ax.scatter(theta_over_time[0, :], theta_over_time[1, :], theta_over_time[2, :])
+        # plt.title("MALA")
+        # plt.figure(2)
 
         plt.subplot(256)
-        plt.scatter(theta_over_time[0, :], theta_over_time[1, :])
-        plt.xlabel("mu")
-        plt.ylabel("sigma")
+        plt.plot(theta_over_time[0, :], theta_over_time[1, :], '-o')
+        plt.xlabel("x1")
+        plt.ylabel("x2")
         plt.title("MALA")
         plt.subplot(2, 5, 10)
-        plt.scatter(theta_over_time[0, :], theta_over_time[2, :])
-        plt.xlabel("x2")
-        plt.ylabel("x2")
+        plt.plot(theta_over_time[0, :], theta_over_time[2, :], '-o')
+        plt.xlabel("x1")
+        plt.ylabel("x3")
         plt.title("MALA")
 
         plt.subplot(257)
@@ -195,16 +199,18 @@ def banana3D_samples(nb_iter):
         plt.subplot(258)
         plt.title("Autocorrel x1")
         plt.plot([np.abs(pd.Series(theta_over_time[0, :]).autocorr(i)) for i in range(1, 100)])
+        plt.ylim(0,1)
 
         plt.subplot(259)
         plt.title("Autocorrel x2")
         plt.plot([np.abs(pd.Series(theta_over_time[1, :]).autocorr(i)) for i in range(1, 100)])
+        plt.ylim(0,1)
 
-    plt.legend(epsilons, loc="upper right", bbox_to_anchor=(1.5, 1))
+    plt.legend(sigmas3, loc="upper right", bbox_to_anchor=(1.5, 1))
     plt.suptitle("Comparison between MMALA and MALA scheme - banana shape")
     plt.show()
 
 
 # gaussian_samples(1000)
 # banana_samples(10000)
-banana3D_samples(1000)
+banana3D_samples(2000)

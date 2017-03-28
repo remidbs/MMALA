@@ -7,6 +7,7 @@ class MmalaStrategy:
         self.d = self.problem.d
 
     def mu(self, epsilon, x):
+        x = x.copy()
         Ginv = self.problem.Ginv(x)
         grad_G = self.problem.grad_G(x)
         mu = x \

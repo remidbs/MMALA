@@ -12,9 +12,9 @@ class Sampler:
         mu_x = self.strategy.mu(self.epsilon, x)
         sigma_x = self.strategy.sigma(self.epsilon, x)
         x_proposed = np.random.multivariate_normal(mu_x, sigma_x)
-        mu_x_proposed = self.strategy.mu(self.epsilon, x_proposed)
-        sigma_x_proposed = self.strategy.sigma(self.epsilon, x_proposed)
-        acceptation_rate = min(1, self.strategy.pi_ratio(x, x_proposed) *
+        mu_x_proposed = self.strategy.mu(self.epsilon, x_proposed.copy())
+        sigma_x_proposed = self.strategy.sigma(self.epsilon, x_proposed.copy())
+        acceptation_rate = min(1, self.strategy.pi_ratio(x, x_proposed.copy()) *
                                np.exp(-0.5 * (x - mu_x_proposed).T.dot(np.linalg.inv(sigma_x_proposed)).dot(
                                    x - mu_x_proposed) -
                                       -0.5 * (x_proposed - mu_x).T.dot(np.linalg.inv(sigma_x)).dot(x_proposed - mu_x)) *
